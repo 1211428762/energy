@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
 import HomePage from '@/pages/HomePage.vue'
 import ModelManagement from '@/pages/commissioning/ModelManagement.vue'
 import DeviceInstantiation from '@/pages/commissioning/DeviceInstantiation.vue'
@@ -70,6 +70,6 @@ const routes: RouteRecordRaw[] = [
   { path: '/monitoring/environment', name: 'monitoring-environment', component: EnvironmentMonitoring, meta: { title: '环境监控' } },
   { path: '/monitoring/communication', redirect: '/monitoring/devices' },
 ]
-const router = createRouter({ history: createWebHistory(), routes })
+const router = createRouter({ history: createWebHistory(import.meta.env.BASE_URL), routes })
 
 export default router

@@ -341,13 +341,15 @@ export const useEmsStore = defineStore('ems', {
       this.logs.unshift({ time: this.snapshot.timestamp, event: `${strategy?.name} 已下发至EMS执行`, result: 'PCS功率闭环响应正常，策略进入调度计划' })
       this.persist()
     },
-    getStationTariffs(stationId = this.station.id) {
-      if (!this.tariffConfigs[stationId]) this.tariffConfigs[stationId] = cloneTariffs()
-      return this.tariffConfigs[stationId]
+    getStationTariffs(stationId?: string) {
+      const targetStationId = stationId || this.station.id
+      if (!this.tariffConfigs[targetStationId]) this.tariffConfigs[targetStationId] = cloneTariffs()
+      return this.tariffConfigs[targetStationId]
     },
-    updateTariff(period: string, price: number, stationId = this.station.id) {
-      this.tariffConfigs[stationId] = this.getStationTariffs(stationId).map((item) => item.period === period ? { ...item, price } : item)
-      if (stationId === this.station.id) this.tariffs = this.tariffConfigs[stationId]
+    updateTariff(period: string, price: number, stationId?: string) {
+      const targetStationId = stationId || this.station.id
+      this.tariffConfigs[targetStationId] = this.getStationTariffs(targetStationId).map((item) => item.period === period ? { ...item, price } : item)
+      if (targetStationId === this.station.id) this.tariffs = this.tariffConfigs[targetStationId]
       this.persist()
     },
     updateAlarmRule(id: string, payload: Record<string, string | boolean>) {

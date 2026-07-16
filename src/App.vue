@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
+import { RouterView, useRoute, useRouter } from 'vue-router'
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { Activity, BarChart3, Bell, Blocks, ChevronDown, ChevronRight, Cpu, Gauge, Grid2X2, LogOut, Moon, RadioTower, Settings2, ShieldAlert, Sun, UserRound } from 'lucide-vue-next'
 import LoginPage from '@/pages/LoginPage.vue'
@@ -105,7 +105,7 @@ const goRealtimeAlarms = () => router.push('/maintenance/realtime-alarms')
 
     <aside class="sidebar tob-sidebar">
       <div v-for="menu in menus" :key="menu.label" class="nav-group">
-        <RouterLink v-if="!('children' in menu)" :to="menu.path" class="nav-item"><component :is="menu.icon" :size="18" /><span>{{ menu.label }}</span></RouterLink>
+        <button v-if="!('children' in menu)" class="nav-item" :class="{ 'router-link-active': route.path === menu.path }" @click="navigateTo(menu.path!)"><component :is="menu.icon" :size="18" /><span>{{ menu.label }}</span></button>
         <template v-else>
           <button class="nav-title" @click="toggleMenu(menu.label)">
             <component :is="menu.icon" :size="18" /><span>{{ menu.label }}</span>
@@ -114,7 +114,7 @@ const goRealtimeAlarms = () => router.push('/maintenance/realtime-alarms')
           </button>
           <Transition name="subnav">
             <div v-show="openedMenu === menu.label" class="subnav tob-subnav">
-              <RouterLink v-for="child in menu.children" :key="child.path" :to="child.path">{{ child.label }}</RouterLink>
+              <button v-for="child in menu.children" :key="child.path" :class="{ 'router-link-active': route.path === child.path }" @click="navigateTo(child.path)">{{ child.label }}</button>
             </div>
           </Transition>
         </template>
@@ -123,9 +123,9 @@ const goRealtimeAlarms = () => router.push('/maintenance/realtime-alarms')
 
     <section class="tabbar" @wheel.passive="onTabWheel">
       <div ref="tabbarRef" class="tabbar-track">
-        <RouterLink v-for="tab in store.openedTabs" :key="tab.path" :to="tab.path" class="route-tab">
-          <Grid2X2 :size="12" />{{ tab.title }}<button v-if="tab.path !== '/'" @click.prevent="closeTab(tab.path)">×</button>
-        </RouterLink>
+        <button v-for="tab in store.openedTabs" :key="tab.path" class="route-tab" :class="{ 'router-link-active': route.path === tab.path }" @click="navigateTo(tab.path)">
+          <Grid2X2 :size="12" />{{ tab.title }}<span v-if="tab.path !== '/'" @click.stop="closeTab(tab.path)">×</span>
+        </button>
       </div>
     </section>
 
