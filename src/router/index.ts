@@ -36,7 +36,7 @@ const routes: RouteRecordRaw[] = [
   { path: '/commissioning/devices', name: 'commissioning-devices', component: DeviceInstantiation, meta: { title: '设备实例化' } },
   { path: '/commissioning/points', name: 'commissioning-points', component: PointMapping, meta: { title: '点表配置' } },
   { path: '/commissioning/station', name: 'commissioning-station', component: StationCreate, meta: { title: '电站管理' } },
-  { path: '/commissioning/launch', name: 'commissioning-launch', component: StationLaunch, meta: { title: '电站投运' } },
+  // { path: '/commissioning/launch', name: 'commissioning-launch', component: StationLaunch, meta: { title: '电站投运' } },
   { path: '/commissioning/topology', name: 'commissioning-topology', component: DeviceTopology, meta: { title: '设备拓扑展示' } },
   { path: '/operation', redirect: '/operation/overview' },
   { path: '/operation/overview', name: 'operation-overview', component: OperationOverview, meta: { title: '运营总览' } },

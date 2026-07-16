@@ -4,7 +4,7 @@ import { useEmsStore, type RoleName } from '@/stores/ems'
 
 const store = useEmsStore()
 const username = ref('admin')
-const password = ref('admin123')
+const password = ref('admin')
 const remember = ref(true)
 const role = ref<RoleName>('系统管理员')
 const message = ref('')

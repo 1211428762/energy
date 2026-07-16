@@ -20,7 +20,7 @@ const menus = [
     { path: '/commissioning/devices', label: '设备实例化' },
     { path: '/commissioning/points', label: '点表配置' },
     { path: '/commissioning/station', label: '电站管理' },
-    { path: '/commissioning/launch', label: '电站投运' },
+    // { path: '/commissioning/launch', label: '电站投运' },
     { path: '/commissioning/topology', label: '设备拓扑展示' },
   ] },
   { label: '运营管理', icon: Gauge, children: [
