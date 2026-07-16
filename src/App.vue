@@ -82,7 +82,11 @@ const toggleMenu = (label: string) => {
   openedMenu.value = openedMenu.value === label ? '' : label
 }
 
-const goRealtimeAlarms = () => router.push('/maintenance/realtime-alarms')
+const navigateTo = (path: string) => {
+  router.push(path)
+}
+
+const goRealtimeAlarms = () => navigateTo('/maintenance/realtime-alarms')
 </script>
 
 <template>

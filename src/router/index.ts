@@ -70,6 +70,6 @@ const routes: RouteRecordRaw[] = [
   { path: '/monitoring/environment', name: 'monitoring-environment', component: EnvironmentMonitoring, meta: { title: '环境监控' } },
   { path: '/monitoring/communication', redirect: '/monitoring/devices' },
 ]
-const router = createRouter({ history: createWebHistory(import.meta.env.BASE_URL), routes })
+const router = createRouter({ history: createWebHashHistory(import.meta.env.BASE_URL), routes })
 
 export default router

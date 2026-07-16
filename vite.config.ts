@@ -4,15 +4,26 @@ import path from 'path'
 import Inspector from 'unplugin-vue-dev-locator/vite'
 
 // https://vite.dev/config/
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   base: '/energy/',
   build: {
-    sourcemap: 'hidden',
+    sourcemap: false,
+    chunkSizeWarningLimit: 1200,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vue: ['vue', 'vue-router', 'pinia'],
+          element: ['element-plus'],
+          echarts: ['echarts'],
+          icons: ['lucide-vue-next'],
+        },
+      },
+    },
   },
   plugins: [
     vue(),
-    Inspector(),
-  ],
+    command === 'serve' && Inspector(),
+  ].filter(Boolean),
   resolve: {
     dedupe: ['vue'],
     alias: {
@@ -23,4 +34,4 @@ export default defineConfig({
   optimizeDeps: {
     force: true,
   },
-})
+}))
