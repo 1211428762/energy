@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useEmsStore, type RoleName } from '@/stores/ems'
+import emsBg from '/img/emsbg.jpg'
 
 const store = useEmsStore()
 const username = ref('admin')
@@ -17,7 +18,7 @@ const submit = () => {
 </script>
 
 <template>
-  <main class="login-page blueprint-login">
+  <main class="login-page blueprint-login" :style="{ backgroundImage: `url(${emsBg})` }">
     <section class="blueprint-hero">
       <!-- <img :src="visualUrl" alt="简约储能柜" /> -->
     </section>
@@ -37,7 +38,7 @@ const submit = () => {
 </template>
 <style>
 .blueprint-login{
-  background: url(/public/img/emsbg.jpg) no-repeat;
+  background-repeat: no-repeat;
   background-position: center;
   background-size: 100% 100%;
 }
