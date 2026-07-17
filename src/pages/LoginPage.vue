@@ -37,7 +37,7 @@ const submit = () => {
 </template>
 <style>
 .blueprint-login{
-  background: url(/public/img/emsbg.png) no-repeat;
+  background: url(/public/img/emsbg.jpg) no-repeat;
   background-position: center;
   background-size: 100% 100%;
 }
