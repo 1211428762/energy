@@ -1,4 +1,4 @@
-import { createApp } from 'vue'
+﻿import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
@@ -12,3 +12,10 @@ app.use(createPinia())
 app.use(router)
 app.use(ElementPlus)
 app.mount('#app')
+
+requestAnimationFrame(() => {
+  const loading = document.getElementById('app-loading')
+  if (!loading) return
+  loading.classList.add('loading-hide')
+  window.setTimeout(() => loading.remove(), 320)
+})

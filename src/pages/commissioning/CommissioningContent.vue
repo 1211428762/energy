@@ -105,7 +105,7 @@ const saveStation = () => {
       <template v-else>
         <div class="station-manager-actions"><el-button @click="stationEditing = false">返回列表</el-button><el-button type="primary" @click="saveStation">保存电站</el-button></div>
         <div class="split">
-          <div class="station-hero"><img src="/public/img/gui.png" alt="电站展示" /><div><strong>{{ stationForm.name || '新增储能电站' }}</strong><span>{{ stationForm.location || '请配置电站位置' }}</span></div></div>
+          <div class="station-hero"><img src="/img/gui.png" alt="电站展示" /><div><strong>{{ stationForm.name || '新增储能电站' }}</strong><span>{{ stationForm.location || '请配置电站位置' }}</span></div></div>
           <el-form :model="stationForm" label-width="100px"><el-form-item label="电站名称"><el-input v-model="stationForm.name" /></el-form-item><el-form-item label="位置"><el-input v-model="stationForm.location" /></el-form-item><el-form-item label="储能容量"><el-input v-model="stationForm.capacity" /></el-form-item><el-form-item label="额定功率"><el-input v-model="stationForm.powerRating" /></el-form-item><el-form-item label="并网电压"><el-input v-model="stationForm.gridVoltage" /></el-form-item><el-form-item label="变压器变比"><el-input v-model="stationForm.transformerRatio" /></el-form-item><el-form-item label="并网点"><el-input v-model="stationForm.gridPoint" /></el-form-item><el-form-item label="状态"><el-select v-model="stationForm.status"><el-option label="待投运" value="待投运" /><el-option label="调试中" value="调试中" /><el-option label="稳定运行" value="稳定运行" /></el-select></el-form-item></el-form>
         </div>
       </template>

@@ -1,10 +1,37 @@
-<!doctype html>
-<html lang="en">
+﻿<!doctype html>
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EMS</title>
+    <style>
+      #app-loading {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* background: linear-gradient(135deg, #edf6f9, #f7fbfd); */
+        transition: opacity .28s ease, visibility .28s ease;
+      }
+      #app-loading.loading-hide {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .boot-loader {
+        width: 48px;
+        height: 48px;
+        border: 4px solid rgba(64, 158, 255, .16);
+        border-top-color: #409eff;
+        border-right-color: #67c23a;
+        border-radius: 50%;
+        animation: boot-spin .9s linear infinite;
+        box-shadow: 0 8px 24px rgba(64, 158, 255, .18);
+      }
+      @keyframes boot-spin { to { transform: rotate(360deg); } }
+    </style>
     <script type="module">
       if (import.meta.hot?.on) {
         import.meta.hot.on('vite:error', (error) => {
@@ -18,6 +45,7 @@
     </script>
   </head>
   <body>
+    <div id="app-loading"><div class="boot-loader"></div></div>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
