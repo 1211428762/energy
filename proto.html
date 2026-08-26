@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>调度管理 - Figma 线框原型</title>
+<style>
+/* ========== 全局重置与基础样式 ========== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", sans-serif; font-size: 14px; color: #303133; background: #f5f7fa; }
+
+/* ========== 布局容器 ========== */
+.app-container { display: flex; height: 100vh; overflow: hidden; }
+
+/* ========== 左侧导航栏 ========== */
+.sidebar { width: 240px; background: #fff; border-right: 2px solid #E4E7ED; display: flex; flex-direction: column; flex-shrink: 0; }
+.sidebar-logo { height: 56px; display: flex; align-items: center; padding: 0 20px; border-bottom: 2px solid #E4E7ED; background: #fafafa; }
+.sidebar-logo-icon { width: 32px; height: 32px; border: 2px solid #409EFF; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #409EFF; font-weight: bold; margin-right: 10px; }
+.sidebar-logo-text { font-size: 16px; font-weight: 600; color: #303133; }
+.sidebar-section-title { padding: 16px 20px 8px; font-size: 12px; color: #909399; letter-spacing: 1px; border-top: 1px solid #E4E7ED; }
+.sidebar-menu { flex: 1; overflow-y: auto; }
+.menu-item { display: flex; align-items: center; padding: 12px 20px; cursor: pointer; border-left: 3px solid transparent; transition: all .15s; font-size: 14px; color: #606266; position: relative; }
+.menu-item:hover { background: #ecf5ff; color: #409EFF; }
+.menu-item.active { background: #ecf5ff; color: #409EFF; border-left-color: #409EFF; font-weight: 600; }
+.menu-item-icon { width: 20px; height: 20px; border: 1.5px solid currentColor; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; margin-right: 10px; flex-shrink: 0; }
+.menu-item-badge { position: absolute; right: 20px; font-size: 11px; background: #f0f2f5; padding: 2px 6px; border-radius: 3px; border: 1px solid #E4E7ED; color: #909399; }
+
+/* ========== 主内容区域 ========== */
+.main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ========== 顶部 Header ========== */
+.header { height: 56px; background: #fff; border-bottom: 2px solid #E4E7ED; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; }
+.header-left { display: flex; align-items: center; }
+.header-title { font-size: 18px; font-weight: 600; color: #303133; margin-right: 16px; }
+.breadcrumb { display: flex; align-items: center; font-size: 13px; color: #909399; }
+.breadcrumb-sep { margin: 0 6px; color: #C0C4CC; }
+.breadcrumb-current { color: #303133; }
+.header-right { display: flex; align-items: center; gap: 16px; }
+.header-action { padding: 6px 12px; border: 1.5px solid #E4E7ED; border-radius: 4px; font-size: 13px; color: #606266; cursor: pointer; }
+.header-action:hover { border-color: #409EFF; color: #409EFF; }
+.header-avatar { width: 32px; height: 32px; border: 2px solid #E4E7ED; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #909399; }
+
+/* ========== 页面内容区 ========== */
+.content-area { flex: 1; overflow-y: auto; padding: 24px; background: #f5f7fa; }
+.page { display: none; }
+.page.active { display: block; }
+.page-header { margin-bottom: 20px; }
+.page-title { font-size: 16px; font-weight: 600; color: #303133; margin-bottom: 6px; }
+.page-desc { font-size: 13px; color: #909399; }
+
+/* ========== 线框通用组件 ========== */
+.query-bar { background: #fff; border: 2px solid #E4E7ED; border-radius: 4px; padding: 18px 20px; margin-bottom: 16px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.query-field { display: flex; align-items: center; gap: 6px; }
+.query-label { font-size: 13px; color: #606266; white-space: nowrap; }
+.query-input { height: 32px; border: 1.5px solid #DCDFE6; border-radius: 4px; padding: 0 10px; font-size: 13px; color: #303133; width: 160px; background: #fff; }
+.query-select { height: 32px; border: 1.5px solid #DCDFE6; border-radius: 4px; padding: 0 10px; font-size: 13px; color: #303133; width: 140px; background: #fff; }
+.query-btn { height: 32px; padding: 0 16px; border-radius: 4px; font-size: 13px; cursor: pointer; border: 1.5px solid; display: inline-flex; align-items: center; }
+.query-btn-primary { background: #409EFF; color: #fff; border-color: #409EFF; }
+.query-btn-default { background: #fff; color: #606266; border-color: #DCDFE6; }
+
+.wireframe-table { width: 100%; border-collapse: collapse; background: #fff; border: 2px solid #E4E7ED; }
+.wireframe-table th { background: #fafafa; border: 1.5px solid #E4E7ED; padding: 10px 14px; font-size: 13px; font-weight: 600; color: #606266; text-align: left; }
+.wireframe-table td { border: 1.5px solid #E4E7ED; padding: 10px 14px; font-size: 13px; color: #303133; }
+.wireframe-table tr:hover td { background: #ecf5ff; }
+
+.op-btn { padding: 4px 10px; border: 1.5px solid; border-radius: 3px; font-size: 12px; cursor: pointer; margin-right: 6px; display: inline-block; }
+.op-btn-primary { border-color: #409EFF; color: #409EFF; background: #ecf5ff; }
+.op-btn-success { border-color: #67C23A; color: #67C23A; background: #f0f9eb; }
+.op-btn-warning { border-color: #E6A23C; color: #E6A23C; background: #fdf6ec; }
+.op-btn-danger { border-color: #F56C6C; color: #F56C6C; background: #fef0f0; }
+
+.status-tag { padding: 3px 10px; border-radius: 3px; font-size: 12px; border: 1.5px solid; display: inline-block; }
+.status-tag-success { border-color: #67C23A; color: #67C23A; background: #f0f9eb; }
+.status-tag-warning { border-color: #E6A23C; color: #E6A23C; background: #fdf6ec; }
+.status-tag-danger { border-color: #F56C6C; color: #F56C6C; background: #fef0f0; }
+.status-tag-info { border-color: #409EFF; color: #409EFF; background: #ecf5ff; }
+.status-tag-default { border-color: #909399; color: #909399; background: #f4f4f5; }
+
+.paginator { background: #fff; border: 2px solid #E4E7ED; border-radius: 4px; padding: 12px 20px; margin-top: 16px; display: flex; align-items: center; justify-content: space-between; }
+.paginator-info { font-size: 13px; color: #606266; }
+.paginator-pages { display: flex; align-items: center; gap: 6px; }
+.page-btn { width: 32px; height: 32px; border: 1.5px solid #DCDFE6; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #606266; cursor: pointer; background: #fff; }
+.page-btn.active { border-color: #409EFF; color: #409EFF; background: #ecf5ff; }
+.page-btn.disabled { color: #C0C4CC; cursor: not-allowed; }
+
+.modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 1000; align-items: center; justify-content: center; }
+.modal-overlay.show { display: flex; }
+.modal-box { width: 640px; background: #fff; border: 2px solid #E4E7ED; border-radius: 6px; }
+.modal-header { padding: 16px 20px; border-bottom: 2px solid #E4E7ED; display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-size: 16px; font-weight: 600; color: #303133; }
+.modal-close { width: 28px; height: 28px; border: 1.5px solid #E4E7ED; border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; color: #909399; background:#fff; }
+.modal-close:hover { border-color:#F56C6C; color:#F56C6C; }
+.modal-body { padding: 20px; }
+.modal-footer { padding: 12px 20px; border-top: 2px solid #E4E7ED; display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+
+.form-row { display: flex; align-items: flex-start; margin-bottom: 16px; }
+.form-label { width: 100px; text-align: right; font-size: 13px; color: #606266; padding-right: 10px; line-height: 32px; flex-shrink: 0; }
+.form-label.required::before { content: "*"; color: #F56C6C; margin-right: 4px; }
+.form-input { height: 32px; border: 1.5px solid #DCDFE6; border-radius: 4px; padding: 0 10px; font-size: 13px; width: 240px; }
+.form-select { height: 32px; border: 1.5px solid #DCDFE6; border-radius: 4px; padding: 0 10px; font-size: 13px; width: 240px; background: #fff; }
+.form-textarea { height: 80px; border: 1.5px solid #DCDFE6; border-radius: 4px; padding: 8px 10px; font-size: 13px; width: 400px; resize: vertical; }
+
+.toolbar { background: #fff; border: 2px solid #E4E7ED; border-radius: 4px; padding: 12px 20px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.toolbar-left { display: flex; align-items: center; gap: 10px; }
+.toolbar-right { display: flex; align-items: center; gap: 10px; }
+.toolbar-btn { height: 32px; padding: 0 16px; border-radius: 4px; font-size: 13px; cursor: pointer; border: 1.5px solid; display: inline-flex; align-items: center; }
+.toolbar-btn-primary { background: #409EFF; color: #fff; border-color: #409EFF; }
+.toolbar-btn-default { background: #fff; color: #606266; border-color: #DCDFE6; }
+
+.kpi-row { display: flex; gap: 16px; margin-bottom: 20px; }
+.kpi-card { flex: 1; background: #fff; border: 2px solid #E4E7ED; border-radius: 6px; padding: 20px; }
+.kpi-card-title { font-size: 13px; color: #909399; margin-bottom: 8px; }
+.kpi-card-value { font-size: 28px; font-weight: 700; color: #303133; }
+.kpi-card-unit { font-size: 14px; color: #909399; margin-left: 4px; }
+.kpi-card-sub { font-size: 12px; color: #909399; margin-top: 6px; }
+.kpi-card-accent { border-color: #409EFF; }
+.kpi-card-accent .kpi-card-value { color: #409EFF; }
+.kpi-card-success { border-color: #67C23A; }
+.kpi-card-success .kpi-card-value { color: #67C23A; }
+.kpi-card-warning { border-color: #E6A23C; }
+.kpi-card-warning .kpi-card-value { color: #E6A23C; }
+.kpi-card-danger { border-color: #F56C6C; }
+.kpi-card-danger .kpi-card-value { color: #F56C6C; }
+
+.week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+.week-card { background: #fff; border: 2px solid #E4E7ED; border-radius: 4px; overflow: hidden; }
+.week-card-header { padding: 10px 14px; background: #fafafa; border-bottom: 1.5px solid #E4E7ED; font-size: 14px; font-weight: 600; color: #303133; text-align: center; }
+.week-card-header.active { background: #ecf5ff; color: #409EFF; border-bottom-color: #409EFF; }
+.week-card-body { padding: 12px 14px; }
+.week-plan-item { padding: 6px 0; font-size: 13px; color: #303133; border-bottom: 1px dashed #E4E7ED; }
+.week-plan-item:last-child { border-bottom: none; }
+.week-plan-label { font-size: 11px; color: #909399; }
+.week-plan-value { font-weight: 500; }
+
+.curve-box { background: #fff; border: 2px solid #E4E7ED; border-radius: 4px; padding: 20px; margin-bottom: 16px; }
+.curve-title { font-size: 14px; font-weight: 600; color: #303133; margin-bottom: 14px; }
+.curve-chart { border: 1.5px solid #E4E7ED; border-radius: 4px; height: 160px; background: #fafafa; display: flex; align-items: flex-end; padding: 12px 16px; gap: 4px; }
+.curve-bar { flex: 1; border-radius: 3px 3px 0 0; min-width: 0; }
+.curve-bar.charge { background: #67C23A; border: 1.5px solid #5daf34; }
+.curve-bar.discharge { background: #E6A23C; border: 1.5px solid #cf8b2e; }
+.curve-bar.idle { background: #f4f4f5; border: 1.5px solid #E4E7ED; }
+.curve-axis { display: flex; justify-content: space-between; margin-top: 6px; font-size: 11px; color: #909399; padding: 0 16px; }
+
+.config-section { background: #fff; border: 2px solid #E4E7ED; border-radius: 4px; padding: 20px; margin-bottom: 16px; }
+.config-section-title { font-size: 14px; font-weight: 600; color: #303133; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1.5px solid #E4E7ED; }
+.config-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.config-item { display: flex; align-items: center; }
+.config-item-label { width: 120px; font-size: 13px; color: #606266; text-align: right; padding-right: 10px; }
+.config-item-value { height: 32px; border: 1.5px solid #DCDFE6; border-radius: 4px; padding: 0 10px; font-size: 13px; width: 200px; background: #fff; text-align: center; }
+
+.type-selector { display: flex; gap: 10px; margin-bottom: 16px; }
+.type-item { padding: 8px 20px; border: 2px solid #E4E7ED; border-radius: 4px; font-size: 13px; color: #606266; cursor: pointer; background: #fff; }
+.type-item.active { border-color: #409EFF; color: #409EFF; background: #ecf5ff; font-weight: 600; }
+
+.realtime-section { background: #fff; border: 2px solid #E4E7ED; border-radius: 4px; padding: 20px; }
+.realtime-title { font-size: 14px; font-weight: 600; color: #303133; margin-bottom: 16px; }
+
+.wireframe-note { font-size: 12px; color: #909399; border: 1px dashed #C0C4CC; border-radius: 4px; padding: 8px 12px; margin-top: 16px; background: #f9f9f9; }
+.wireframe-note::before { content: "线框注释: "; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="app-container">
+
+  <!-- ===== 左侧导航栏 ===== -->
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">EMS</div>
+      <div class="sidebar-logo-text">储能 EMS</div>
+    </div>
+    <div class="sidebar-section-title">调度管理模块</div>
+    <div class="sidebar-menu">
+      <div class="menu-item active" data-page="strategy-manage" onclick="switchPage('strategy-manage',this)">
+        <div class="menu-item-icon">1</div><span>策略管理</span><span class="menu-item-badge">4项</span>
+      </div>
+      <div class="menu-item" data-page="strategy-type" onclick="switchPage('strategy-type',this)">
+        <div class="menu-item-icon">2</div><span>策略类型</span><span class="menu-item-badge">5类</span>
+      </div>
+      <div class="menu-item" data-page="strategy-dispatch" onclick="switchPage('strategy-dispatch',this)">
+        <div class="menu-item-icon">3</div><span>策略下发</span><span class="menu-item-badge">3条</span>
+      </div>
+      <div class="menu-item" data-page="strategy-plan" onclick="switchPage('strategy-plan',this)">
+        <div class="menu-item-icon">4</div><span>策略调度计划</span>
+      </div>
+      <div class="menu-item" data-page="strategy-log" onclick="switchPage('strategy-log',this)">
+        <div class="menu-item-icon">5</div><span>策略执行日志</span><span class="menu-item-badge">12条</span>
+      </div>
+      <div class="menu-item" data-page="realtime-command" onclick="switchPage('realtime-command',this)">
+        <div class="menu-item-icon">6</div><span>实时调度指令</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 主内容区域 ===== -->
+  <div class="main-area">
+
+    <!-- ===== 顶部 Header ===== -->
+    <div class="header">
+      <div class="header-left">
+        <div class="header-title">调度管理</div>
+        <div class="breadcrumb">
+          <span>储能 EMS</span><span class="breadcrumb-sep">/</span><span>调度管理</span><span class="breadcrumb-sep">/</span><span class="breadcrumb-current" id="breadcrumb-current">策略管理</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <div class="header-action">导出</div>
+        <div class="header-action">刷新</div>
+        <div class="header-avatar">Admin</div>
+      </div>
+    </div>
+
+    <!-- ===== 页面内容区 ===== -->
+    <div class="content-area">
+
+      <!-- ==================== 1. 策略管理 ==================== -->
+      <div class="page active" id="page-strategy-manage">
+        <div class="page-header">
+          <div class="page-title">策略管理</div>
+          <div class="page-desc">管理储能系统所有调度策略的创建、编辑、启用和删除。支持削峰填谷、需量管理、调频、防逆流等策略类型。</div>
+        </div>
+
+        <div class="query-bar">
+          <div class="query-field"><span class="query-label">策略名称</span><input class="query-input" placeholder="请输入策略名称"></div>
+          <div class="query-field"><span class="query-label">策略类型</span><select class="query-select"><option>全部</option><option>削峰填谷</option><option>需量管理</option><option>调频</option><option>防逆流</option><option>离网备电</option></select></div>
+          <div class="query-field"><span class="query-label">状态</span><select class="query-select"><option>全部</option><option>启用</option><option>停用</option><option>草稿</option></select></div>
+          <div class="query-field"><span class="query-label">创建时间</span><input class="query-input" value="2026-01 ~ 2026-07" style="width:180px"></div>
+          <button class="query-btn query-btn-primary">查询</button>
+          <button class="query-btn query-btn-default">重置</button>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <button class="toolbar-btn toolbar-btn-primary" onclick="showModal('modal-strategy-add')">+ 新增策略</button>
+            <button class="toolbar-btn toolbar-btn-default">批量删除</button>
+            <button class="toolbar-btn toolbar-btn-default">导出列表</button>
+          </div>
+          <div class="toolbar-right"><span style="font-size:13px;color:#909399;">共 4 条记录</span></div>
+        </div>
+
+        <table class="wireframe-table">
+          <thead><tr>
+            <th style="width:40px;"><input type="checkbox"></th>
+            <th style="width:60px;">序号</th><th>策略名称</th><th>策略类型</th><th>适用站点</th><th>执行周期</th><th>优先级</th><th>状态</th><th>创建时间</th><th style="width:200px;">操作</th>
+          </tr></thead>
+          <tbody>
+            <tr><td><input type="checkbox"></td><td>1</td><td>削峰填谷策略-A站</td><td>削峰填谷</td><td>储能站点A</td><td>每日 08:00-22:00</td><td style="color:#E6A23C;font-weight:600;">高</td><td><span class="status-tag status-tag-success">启用</span></td><td>2026-01-15</td><td><span class="op-btn op-btn-primary">编辑</span><span class="op-btn op-btn-warning">停用</span><span class="op-btn op-btn-danger">删除</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>2</td><td>需量管理策略-B站</td><td>需量管理</td><td>储能站点B</td><td>每月 1-25日</td><td style="color:#409EFF;font-weight:600;">中</td><td><span class="status-tag status-tag-success">启用</span></td><td>2026-02-20</td><td><span class="op-btn op-btn-primary">编辑</span><span class="op-btn op-btn-warning">停用</span><span class="op-btn op-btn-danger">删除</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>3</td><td>调频策略-全网</td><td>调频</td><td>全网聚合</td><td>实时响应</td><td style="color:#F56C6C;font-weight:600;">紧急</td><td><span class="status-tag status-tag-info">下发中</span></td><td>2026-03-10</td><td><span class="op-btn op-btn-primary">编辑</span><span class="op-btn op-btn-success">下发</span><span class="op-btn op-btn-danger">删除</span></td></tr>
+            <tr><td><input type="checkbox"></td><td>4</td><td>防逆流策略-C站</td><td>防逆流</td><td>储能站点C</td><td>实时监控</td><td style="color:#409EFF;font-weight:600;">中</td><td><span class="status-tag status-tag-default">草稿</span></td><td>2026-05-18</td><td><span class="op-btn op-btn-primary">编辑</span><span class="op-btn op-btn-success">启用</span><span class="op-btn op-btn-danger">删除</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="paginator">
+          <div class="paginator-info">共 4 条 / 每页 10 条</div>
+          <div class="paginator-pages"><div class="page-btn disabled">&lt;</div><div class="page-btn active">1</div><div class="page-btn disabled">&gt;</div></div>
+        </div>
+
+        <div class="wireframe-note">策略管理页面：支持按名称、类型、状态筛选策略；可新增、编辑、停用、删除策略；优先级分为紧急/高/中/低四档。</div>
+      </div>
+
+      <!-- ==================== 2. 策略类型 ==================== -->
+      <div class="page" id="page-strategy-type">
+        <div class="page-header">
+          <div class="page-title">策略类型配置</div>
+          <div class="page-desc">配置各类策略的属性参数、充放电曲线、目标设定及响应风险规则。</div>
+        </div>
+
+        <div class="type-selector">
+          <div class="type-item active" onclick="selectType(this)">削峰填谷</div>
+          <div class="type-item" onclick="selectType(this)">需量管理</div>
+          <div class="type-item" onclick="selectType(this)">调频</div>
+          <div class="type-item" onclick="selectType(this)">防逆流</div>
+          <div class="type-item" onclick="selectType(this)">离网备电</div>
+        </div>
+
+        <div class="config-section">
+          <div class="config-section-title">策略属性配置 — 削峰填谷</div>
+          <div class="config-grid">
+            <div class="config-item"><span class="config-item-label">充电起始SOC</span><input class="config-item-value" value="10%"></div>
+            <div class="config-item"><span class="config-item-label">充电终止SOC</span><input class="config-item-value" value="95%"></div>
+            <div class="config-item"><span class="config-item-label">最大充电功率</span><input class="config-item-value" value="500 kW"></div>
+            <div class="config-item"><span class="config-item-label">最大放电功率</span><input class="config-item-value" value="500 kW"></div>
+            <div class="config-item"><span class="config-item-label">峰时段电价</span><input class="config-item-value" value="1.2 元/kWh"></div>
+            <div class="config-item"><span class="config-item-label">谷时段电价</span><input class="config-item-value" value="0.35 元/kWh"></div>
+            <div class="config-item"><span class="config-item-label">峰时段定义</span><input class="config-item-value" value="08:00-22:00"></div>
+            <div class="config-item"><span class="config-item-label">谷时段定义</span><input class="config-item-value" value="22:00-08:00"></div>
+          </div>
+        </div>
+
+        <div class="curve-box">
+          <div class="curve-title">日内充放电曲线 (削峰填谷)</div>
+          <div class="curve-chart">
+            <div class="curve-bar charge" style="height:10%;"></div>
+            <div class="curve-bar charge" style="height:15%;"></div>
+            <div class="curve-bar charge" style="height:20%;"></div>
+            <div class="curve-bar charge" style="height:30%;"></div>
+            <div class="curve-bar charge" style="height:40%;"></div>
+            <div class="curve-bar charge" style="height:50%;"></div>
+            <div class="curve-bar charge" style="height:55%;"></div>
+            <div class="curve-bar discharge" style="height:60%;"></div>
+            <div class="curve-bar discharge" style="height:70%;"></div>
+            <div class="curve-bar discharge" style="height:80%;"></div>
+            <div class="curve-bar discharge" style="height:85%;"></div>
+            <div class="curve-bar discharge" style="height:75%;"></div>
+            <div class="curve-bar discharge" style="height:65%;"></div>
+            <div class="curve-bar discharge" style="height:55%;"></div>
+            <div class="curve-bar discharge" style="height:50%;"></div>
+            <div class="curve-bar discharge" style="height:45%;"></div>
+            <div class="curve-bar discharge" style="height:40%;"></div>
+            <div class="curve-bar discharge" style="height:30%;"></div>
+            <div class="curve-bar idle" style="height:10%;"></div>
+            <div class="curve-bar idle" style="height:8%;"></div>
+            <div class="curve-bar charge" style="height:20%;"></div>
+            <div class="curve-bar charge" style="height:40%;"></div>
+            <div class="curve-bar charge" style="height:60%;"></div>
+            <div class="curve-bar charge" style="height:50%;"></div>
+          </div>
+          <div class="curve-axis"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>24:00</span></div>
+          <div style="display:flex;gap:16px;margin-top:8px;font-size:12px;color:#606266;">
+            <span style="color:#67C23A;">● 充电时段</span><span style="color:#E6A23C;">● 放电时段</span><span style="color:#909399;">● 待机时段</span>
+          </div>
+        </div>
+
+        <div class="config-section">
+          <div class="config-section-title">策略目标与响应配置</div>
+          <div class="config-grid">
+            <div class="config-item"><span class="config-item-label">策略目标</span><input class="config-item-value" value="最大化峰谷价差收益" style="width:260px"></div>
+            <div class="config-item"><span class="config-item-label">响应时间</span><input class="config-item-value" value="≤ 200ms"></div>
+            <div class="config-item"><span class="config-item-label">目标收益/月</span><input class="config-item-value" value="￥80,000"></div>
+            <div class="config-item"><span class="config-item-label">PCS响应模式</span><input class="config-item-value" value="恒功率模式"></div>
+          </div>
+        </div>
+
+        <div class="config-section">
+          <div class="config-section-title">风险控制规则</div>
+          <div class="config-grid">
+            <div class="config-item"><span class="config-item-label">SOC下限保护</span><input class="config-item-value" value="10%"></div>
+            <div class="config-item"><span class="config-item-label">SOC上限保护</span><input class="config-item-value" value="95%"></div>
+            <div class="config-item"><span class="config-item-label">过温保护阈值</span><input class="config-item-value" value="55℃"></div>
+            <div class="config-item"><span class="config-item-label">过流保护阈值</span><input class="config-item-value" value="1.2×额定"></div>
+            <div class="config-item"><span class="config-item-label">异常响应策略</span><input class="config-item-value" value="自动切待机+告警" style="width:260px"></div>
+            <div class="config-item"><span class="config-item-label">通信超时阈值</span><input class="config-item-value" value="30s"></div>
+          </div>
+        </div>
+
+        <div class="wireframe-note">策略类型页面：选择不同策略类型后，下方属性配置、充放电曲线、目标和风险规则联动切换显示对应参数。</div>
+      </div>
+
+      <!-- ==================== 3. 策略下发 ==================== -->
+      <div class="page" id="page-strategy-dispatch">
+        <div class="page-header">
+          <div class="page-title">策略下发</div>
+          <div class="page-desc">将已配置的策略下发至各储能站点 PCS 设备，支持下发、暂停、停止等操作。</div>
+        </div>
+
+        <div class="query-bar">
+          <div class="query-field"><span class="query-label">策略名称</span><input class="query-input" placeholder="请输入策略名称"></div>
+          <div class="query-field"><span class="query-label">目标站点</span><select class="query-select"><option>全部站点</option><option>储能站点A</option><option>储能站点B</option><option>储能站点C</option></select></div>
+          <div class="query-field"><span class="query-label">下发状态</span><select class="query-select"><option>全部</option><option>已下发</option><option>执行中</option><option>已暂停</option><option>已停止</option></select></div>
+          <button class="query-btn query-btn-primary">查询</button>
+          <button class="query-btn query-btn-default">重置</button>
+        </div>
+
+        <table class="wireframe-table">
+          <thead><tr>
+            <th style="width:60px;">序号</th><th>策略名称</th><th>策略类型</th><th>目标站点</th><th>PCS编号</th><th>下发时间</th><th>下发状态</th><th>执行状态</th><th style="width:240px;">操作</th>
+          </tr></thead>
+          <tbody>
+            <tr><td>1</td><td>削峰填谷策略-A站</td><td>削峰填谷</td><td>储能站点A</td><td>PCS-A01</td><td>2026-07-15 08:00</td><td><span class="status-tag status-tag-success">已下发</span></td><td><span class="status-tag status-tag-info">执行中</span></td><td><span class="op-btn op-btn-warning">暂停</span><span class="op-btn op-btn-danger">停止</span><span class="op-btn op-btn-primary">详情</span></td></tr>
+            <tr><td>2</td><td>需量管理策略-B站</td><td>需量管理</td><td>储能站点B</td><td>PCS-B01</td><td>2026-07-15 00:00</td><td><span class="status-tag status-tag-success">已下发</span></td><td><span class="status-tag status-tag-warning">已暂停</span></td><td><span class="op-btn op-btn-success">恢复</span><span class="op-btn op-btn-danger">停止</span><span class="op-btn op-btn-primary">详情</span></td></tr>
+            <tr><td>3</td><td>调频策略-全网</td><td>调频</td><td>全网聚合</td><td>PCS-C01/02/03</td><td>2026-07-15 12:30</td><td><span class="status-tag status-tag-success">已下发</span></td><td><span class="status-tag status-tag-info">执行中</span></td><td><span class="op-btn op-btn-warning">暂停</span><span class="op-btn op-btn-danger">停止</span><span class="op-btn op-btn-primary">详情</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="paginator">
+          <div class="paginator-info">共 3 条 / 每页 10 条</div>
+          <div class="paginator-pages"><div class="page-btn disabled">&lt;</div><div class="page-btn active">1</div><div class="page-btn disabled">&gt;</div></div>
+        </div>
+
+        <div class="wireframe-note">策略下发页面：策略下发后进入"执行中"状态；支持暂停（保持SOC不变等待恢复）和停止（完全退出策略）；暂停后可恢复执行。</div>
+      </div>
+
+      <!-- ==================== 4. 策略调度计划 ==================== -->
+      <div class="page" id="page-strategy-plan">
+        <div class="page-header">
+          <div class="page-title">策略调度计划</div>
+          <div class="page-desc">以周为单位配置每日调度计划，周一至周五执行削峰填谷，周末低负荷待机模式。</div>
+        </div>
+
+        <div class="query-bar" style="border-color:#409EFF;background:#ecf5ff;">
+          <span style="font-size:14px;font-weight:600;color:#409EFF;">当前生效计划周期：</span>
+          <span style="font-size:14px;color:#303133;">2026-07-14 (周一) ~ 2026-07-20 (周日)</span>
+          <button class="query-btn query-btn-primary" style="margin-left:auto;">编辑计划</button>
+        </div>
+
+        <div class="week-grid">
+          <div class="week-card"><div class="week-card-header active">周一</div><div class="week-card-body">
+            <div class="week-plan-item"><div class="week-plan-label">主策略</div><div class="week-plan-value" style="color:#409EFF;">削峰填谷</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">执行时段</div><div class="week-plan-value">08:00-22:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">充电时段</div><div class="week-plan-value" style="color:#67C23A;">22:00-08:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">放电时段</div><div class="week-plan-value" style="color:#E6A23C;">08:00-22:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">目标功率</div><div class="week-plan-value">500 kW</div></div>
+          </div></div>
+
+          <div class="week-card"><div class="week-card-header active">周二</div><div class="week-card-body">
+            <div class="week-plan-item"><div class="week-plan-label">主策略</div><div class="week-plan-value" style="color:#409EFF;">削峰填谷</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">执行时段</div><div class="week-plan-value">08:00-22:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">充电时段</div><div class="week-plan-value" style="color:#67C23A;">22:00-08:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">放电时段</div><div class="week-plan-value" style="color:#E6A23C;">08:00-22:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">目标功率</div><div class="week-plan-value">500 kW</div></div>
+          </div></div>
+
+          <div class="week-card"><div class="week-card-header active">周三</div><div class="week-card-body">
+            <div class="week-plan-item"><div class="week-plan-label">主策略</div><div class="week-plan-value" style="color:#409EFF;">削峰填谷</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">执行时段</div><div class="week-plan-value">08:00-22:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">辅助策略</div><div class="week-plan-value" style="color:#E6A23C;">需量管理(叠加)</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">充电时段</div><div class="week-plan-value" style="color:#67C23A;">22:00-08:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">目标功率</div><div class="week-plan-value">500 kW</div></div>
+          </div></div>
+
+          <div class="week-card"><div class="week-card-header active">周四</div><div class="week-card-body">
+            <div class="week-plan-item"><div class="week-plan-label">主策略</div><div class="week-plan-value" style="color:#409EFF;">削峰填谷</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">执行时段</div><div class="week-plan-value">08:00-22:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">充电时段</div><div class="week-plan-value" style="color:#67C23A;">22:00-08:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">放电时段</div><div class="week-plan-value" style="color:#E6A23C;">08:00-22:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">目标功率</div><div class="week-plan-value">500 kW</div></div>
+          </div></div>
+
+          <div class="week-card"><div class="week-card-header active">周五</div><div class="week-card-body">
+            <div class="week-plan-item"><div class="week-plan-label">主策略</div><div class="week-plan-value" style="color:#409EFF;">削峰填谷</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">执行时段</div><div class="week-plan-value">08:00-18:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">充电时段</div><div class="week-plan-value" style="color:#67C23A;">18:00-08:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">放电时段</div><div class="week-plan-value" style="color:#E6A23C;">08:00-18:00</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">目标功率</div><div class="week-plan-value">400 kW</div></div>
+          </div></div>
+
+          <div class="week-card"><div class="week-card-header">周六</div><div class="week-card-body">
+            <div class="week-plan-item"><div class="week-plan-label">主策略</div><div class="week-plan-value" style="color:#909399;">低负荷待机</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">执行时段</div><div class="week-plan-value">全天</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">维持SOC</div><div class="week-plan-value" style="color:#67C23A;">50%-70%</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">辅助策略</div><div class="week-plan-value" style="color:#E6A23C;">防逆流(触发)</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">目标功率</div><div class="week-plan-value">100 kW</div></div>
+          </div></div>
+
+          <div class="week-card"><div class="week-card-header">周日</div><div class="week-card-body">
+            <div class="week-plan-item"><div class="week-plan-label">主策略</div><div class="week-plan-value" style="color:#909399;">低负荷待机</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">执行时段</div><div class="week-plan-value">全天</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">维持SOC</div><div class="week-plan-value" style="color:#67C23A;">50%-70%</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">辅助策略</div><div class="week-plan-value" style="color:#E6A23C;">防逆流(触发)</div></div>
+            <div class="week-plan-item"><div class="week-plan-label">目标功率</div><div class="week-plan-value">100 kW</div></div>
+          </div></div>
+        </div>
+
+        <div class="wireframe-note">策略调度计划页面：以周视图展示每日调度安排；工作日执行削峰填谷策略，周末进入低负荷待机+防逆流触发模式；周三可叠加需量管理辅助策略。</div>
+      </div>
+
+      <!-- ==================== 5. 策略执行日志 ==================== -->
+      <div class="page" id="page-strategy-log">
+        <div class="page-header">
+          <div class="page-title">策略执行日志</div>
+          <div class="page-desc">记录所有策略下发、SOC调整、功率变更、异常事件等执行日志，支持按时间和类型筛选。</div>
+        </div>
+
+        <div class="query-bar">
+          <div class="query-field"><span class="query-label">日志类型</span><select class="query-select"><option>全部</option><option>策略下发</option><option>SOC调整</option><option>功率变更</option><option>异常事件</option><option>策略暂停</option><option>策略恢复</option><option>策略停止</option></select></div>
+          <div class="query-field"><span class="query-label">策略名称</span><input class="query-input" placeholder="请输入策略名称"></div>
+          <div class="query-field"><span class="query-label">站点</span><select class="query-select"><option>全部站点</option><option>储能站点A</option><option>储能站点B</option><option>储能站点C</option></select></div>
+          <div class="query-field"><span class="query-label">时间范围</span><input class="query-input" value="2026-07-01 ~ 07-20" style="width:180px"></div>
+          <button class="query-btn query-btn-primary">查询</button>
+          <button class="query-btn query-btn-default">重置</button>
+        </div>
+
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <button class="toolbar-btn toolbar-btn-default">导出日志</button>
+            <button class="toolbar-btn toolbar-btn-default">批量清理</button>
+          </div>
+          <div class="toolbar-right"><span style="font-size:13px;color:#909399;">共 12 条记录</span></div>
+        </div>
+
+        <table class="wireframe-table">
+          <thead><tr>
+            <th style="width:50px;">序号</th><th style="width:140px;">时间</th><th>日志类型</th><th>策略名称</th><th>站点</th><th>PCS编号</th><th>变更内容</th><th>变更前</th><th>变更后</th><th>结果</th>
+          </tr></thead>
+          <tbody>
+            <tr><td>1</td><td>2026-07-20 08:00</td><td><span class="status-tag status-tag-info">策略下发</span></td><td>削峰填谷策略-A站</td><td>储能站点A</td><td>PCS-A01</td><td>策略下发启动</td><td>待机</td><td>执行中</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+            <tr><td>2</td><td>2026-07-20 08:05</td><td><span class="status-tag status-tag-warning">功率变更</span></td><td>削峰填谷策略-A站</td><td>储能站点A</td><td>PCS-A01</td><td>PCS有功功率设定</td><td>0 kW</td><td>-400 kW</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+            <tr><td>3</td><td>2026-07-20 10:30</td><td><span class="status-tag status-tag-warning">SOC调整</span></td><td>削峰填谷策略-A站</td><td>储能站点A</td><td>PCS-A01</td><td>SOC目标值变更</td><td>95%</td><td>80%</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+            <tr><td>4</td><td>2026-07-20 12:30</td><td><span class="status-tag status-tag-info">策略下发</span></td><td>调频策略-全网</td><td>全网聚合</td><td>PCS-C01/02</td><td>调频策略下发</td><td>待机</td><td>调频响应</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+            <tr><td>5</td><td>2026-07-20 13:00</td><td><span class="status-tag status-tag-danger">异常事件</span></td><td>需量管理策略-B站</td><td>储能站点B</td><td>PCS-B01</td><td>PCS通信超时</td><td>正常</td><td>通信中断</td><td><span class="status-tag status-tag-danger">异常</span></td></tr>
+            <tr><td>6</td><td>2026-07-20 13:05</td><td><span class="status-tag status-tag-default">策略暂停</span></td><td>需量管理策略-B站</td><td>储能站点B</td><td>PCS-B01</td><td>策略自动暂停</td><td>执行中</td><td>已暂停</td><td><span class="status-tag status-tag-warning">已暂停</span></td></tr>
+            <tr><td>7</td><td>2026-07-20 14:00</td><td><span class="status-tag status-tag-success">策略恢复</span></td><td>需量管理策略-B站</td><td>储能站点B</td><td>PCS-B01</td><td>通信恢复，策略恢复</td><td>已暂停</td><td>执行中</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+            <tr><td>8</td><td>2026-07-20 15:30</td><td><span class="status-tag status-tag-warning">功率变更</span></td><td>调频策略-全网</td><td>全网聚合</td><td>PCS-C01</td><td>功率上调响应</td><td>-200 kW</td><td>-350 kW</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+            <tr><td>9</td><td>2026-07-20 18:00</td><td><span class="status-tag status-tag-warning">SOC调整</span></td><td>削峰填谷策略-A站</td><td>储能站点A</td><td>PCS-A01</td><td>SOC目标恢复</td><td>80%</td><td>95%</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+            <tr><td>10</td><td>2026-07-20 18:30</td><td><span class="status-tag status-tag-warning">功率变更</span></td><td>削峰填谷策略-A站</td><td>储能站点A</td><td>PCS-A01</td><td>放电功率下调</td><td>-400 kW</td><td>-300 kW</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+          </tbody>
+        </table>
+
+        <div class="paginator">
+          <div class="paginator-info">共 12 条 / 每页 10 条 / 第 1 页</div>
+          <div class="paginator-pages"><div class="page-btn disabled">&lt;</div><div class="page-btn active">1</div><div class="page-btn">2</div><div class="page-btn">&gt;</div></div>
+        </div>
+
+        <div class="wireframe-note">策略执行日志页面：记录策略下发、SOC调整、功率变更、异常事件等所有操作；异常事件会触发策略自动暂停，通信恢复后自动恢复执行。</div>
+      </div>
+
+      <!-- ==================== 6. 实时调度指令 ==================== -->
+      <div class="page" id="page-realtime-command">
+        <div class="page-header">
+          <div class="page-title">实时调度指令</div>
+          <div class="page-desc">展示当前正在执行的调度指令及 PCS 实时响应状态，监控目标功率、SOC 和 PCS 响应情况。</div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-card kpi-card-accent">
+            <div class="kpi-card-title">当前执行指令</div>
+            <div class="kpi-card-value">削峰填谷<span class="kpi-card-unit">策略</span></div>
+            <div class="kpi-card-sub">站点A · PCS-A01 · 执行中</div>
+          </div>
+          <div class="kpi-card kpi-card-warning">
+            <div class="kpi-card-title">目标功率</div>
+            <div class="kpi-card-value">-400<span class="kpi-card-unit">kW</span></div>
+            <div class="kpi-card-sub">放电方向 · 额定500kW</div>
+          </div>
+          <div class="kpi-card kpi-card-success">
+            <div class="kpi-card-title">当前 SOC</div>
+            <div class="kpi-card-value">67<span class="kpi-card-unit">%</span></div>
+            <div class="kpi-card-sub">目标 80% · 下限 10%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-card-title">PCS 响应状态</div>
+            <div class="kpi-card-value" style="color:#67C23A;">正常</div>
+            <div class="kpi-card-sub">响应延迟 ≤ 120ms</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-card-title">指令更新时间</div>
+            <div class="kpi-card-value" style="font-size:20px;">2026-07-20<br>15:30:00</div>
+            <div class="kpi-card-sub">刷新周期: 5s</div>
+          </div>
+        </div>
+
+        <div class="realtime-section">
+          <div class="realtime-title">近期策略调度指令详情</div>
+          <table class="wireframe-table">
+            <thead><tr>
+              <th style="width:50px;">序号</th><th style="width:140px;">指令时间</th><th>指令类型</th><th>策略名称</th><th>PCS编号</th><th>指令内容</th><th>目标值</th><th>实际响应</th><th>响应延迟</th><th>状态</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>1</td><td>2026-07-20 15:30</td><td><span class="status-tag status-tag-info">功率设定</span></td><td>削峰填谷策略-A站</td><td>PCS-A01</td><td>PCS有功功率设定</td><td>-400 kW</td><td>-398 kW</td><td>120ms</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+              <tr><td>2</td><td>2026-07-20 15:25</td><td><span class="status-tag status-tag-warning">SOC调整</span></td><td>削峰填谷策略-A站</td><td>PCS-A01</td><td>SOC目标调整</td><td>80%</td><td>67%→80%</td><td>90ms</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+              <tr><td>3</td><td>2026-07-20 15:20</td><td><span class="status-tag status-tag-info">功率设定</span></td><td>调频策略-全网</td><td>PCS-C01</td><td>PCS有功功率设定</td><td>-350 kW</td><td>-348 kW</td><td>95ms</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+              <tr><td>4</td><td>2026-07-20 15:15</td><td><span class="status-tag status-tag-info">功率设定</span></td><td>调频策略-全网</td><td>PCS-C02</td><td>PCS有功功率设定</td><td>-200 kW</td><td>-195 kW</td><td>110ms</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+              <tr><td>5</td><td>2026-07-20 13:05</td><td><span class="status-tag status-tag-danger">异常指令</span></td><td>需量管理策略-B站</td><td>PCS-B01</td><td>策略自动暂停</td><td>0 kW(待机)</td><td>0 kW</td><td>--</td><td><span class="status-tag status-tag-danger">异常</span></td></tr>
+              <tr><td>6</td><td>2026-07-20 14:00</td><td><span class="status-tag status-tag-success">恢复指令</span></td><td>需量管理策略-B站</td><td>PCS-B01</td><td>策略恢复执行</td><td>-250 kW</td><td>-248 kW</td><td>130ms</td><td><span class="status-tag status-tag-success">成功</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="wireframe-note">实时调度指令页面：顶部KPI卡片实时刷新当前指令、目标功率、SOC和PCS响应状态；下方表格展示近期所有调度指令详情及PCS实际响应情况；异常指令高亮显示。</div>
+      </div>
+
+    </div><!-- /content-area -->
+  </div><!-- /main-area -->
+</div><!-- /app-container -->
+
+<!-- ===== 新增策略弹窗 ===== -->
+<div class="modal-overlay" id="modal-strategy-add">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">新增策略</div>
+      <div class="modal-close" onclick="hideModal('modal-strategy-add')">✕</div>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-label required">策略名称</div>
+        <input class="form-input" placeholder="请输入策略名称">
+      </div>
+      <div class="form-row">
+        <div class="form-label required">策略类型</div>
+        <select class="form-select"><option>请选择策略类型</option><option>削峰填谷</option><option>需量管理</option><option>调频</option><option>防逆流</option><option>离网备电</option></select>
+      </div>
+      <div class="form-row">
+        <div class="form-label required">适用站点</div>
+        <select class="form-select"><option>请选择站点</option><option>储能站点A</option><option>储能站点B</option><option>储能站点C</option><option>全网聚合</option></select>
+      </div>
+      <div class="form-row">
+        <div class="form-label">执行周期</div>
+        <input class="form-input" placeholder="如：每日 08:00-22:00" style="width:300px">
+      </div>
+      <div class="form-row">
+        <div class="form-label">优先级</div>
+        <select class="form-select"><option>中</option><option>紧急</option><option>高</option><option>中</option><option>低</option></select>
+      </div>
+      <div class="form-row">
+        <div class="form-label">策略描述</div>
+        <textarea class="form-textarea" placeholder="请输入策略描述信息..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="query-btn query-btn-default" onclick="hideModal('modal-strategy-add')">取消</button>
+      <button class="query-btn query-btn-primary">确认新增</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 页面名称映射
+var pageNames = {
+  'strategy-manage': '策略管理',
+  'strategy-type': '策略类型',
+  'strategy-dispatch': '策略下发',
+  'strategy-plan': '策略调度计划',
+  'strategy-log': '策略执行日志',
+  'realtime-command': '实时调度指令'
+};
+
+// 页面切换
+function switchPage(pageId, menuEl) {
+  // 切换菜单高亮
+  var items = document.querySelectorAll('.menu-item');
+  for (var i = 0; i < items.length; i++) {
+    items[i].classList.remove('active');
+  }
+  menuEl.classList.add('active');
+
+  // 切换页面显示
+  var pages = document.querySelectorAll('.page');
+  for (var i = 0; i < pages.length; i++) {
+    pages[i].classList.remove('active');
+  }
+  document.getElementById('page-' + pageId).classList.add('active');
+
+  // 更新面包屑
+  document.getElementById('breadcrumb-current').textContent = pageNames[pageId];
+}
+
+// 策略类型切换
+function selectType(el) {
+  var items = document.querySelectorAll('.type-item');
+  for (var i = 0; i < items.length; i++) {
+    items[i].classList.remove('active');
+  }
+  el.classList.add('active');
+}
+
+// 弹窗显示/隐藏
+function showModal(id) {
+  document.getElementById(id).classList.add('show');
+}
+function hideModal(id) {
+  document.getElementById(id).classList.remove('show');
+}
+
+// 点击弹窗遮罩层关闭
+document.getElementById('modal-strategy-add').addEventListener('click', function(e) {
+  if (e.target === this) {
+    this.classList.remove('show');
+  }
+});
+</script>
+</body>
+</html>
